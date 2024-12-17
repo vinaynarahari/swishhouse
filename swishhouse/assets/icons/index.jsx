@@ -11,6 +11,7 @@ import Plus from './Plus';
 import Calender from './Calender';
 import Notif from './Notif';
 import Logout from './Logout';
+import Group from './Group';
 
 import { theme } from '../../constants/theme';
 
@@ -26,6 +27,7 @@ const icons = {
   calender: Calender,
   notif: Notif,
   logout: Logout,
+  group: Group,
 };
 
 const Icon = ({ name, ...props }) => {

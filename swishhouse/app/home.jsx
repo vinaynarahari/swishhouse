@@ -10,8 +10,8 @@ import AddEvent from '../components/AddEvents';
 import Icon from '../assets/icons';
 import { useRouter } from 'expo-router';
 
-
 import Profile from './profile';
+import Community from './community';
 
 const Home = () => {
   const router = useRouter();
@@ -20,9 +20,14 @@ const Home = () => {
   const [refresh, setRefresh] = useState(false);
 
   const onLogout = async () => {
-    setAuth(null);
-    const { error } = await supabase.auth.signOut();
-    if (error) {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw error;
+      }
+      setAuth(null); 
+      router.replace('welcome'); 
+    } catch (error) {
       Alert.alert('Sign out', 'Error signing out!');
     }
   };
@@ -39,6 +44,8 @@ const Home = () => {
         return <Profile />; 
       case 'notifications':
         return <Text style={styles.content}>Placeholder</Text>;
+      case 'community':
+        return <Community />;
       default:
         return <EventCalendar key={refresh} />;
     }
@@ -50,13 +57,12 @@ const Home = () => {
         <View style={styles.header}>
           <Text style={styles.title}>Swish House</Text>
           <View style={styles.iconContainer}>
-            <Pressable onPress={() => router.push('welcome')}>
+            <Pressable onPress={onLogout}>
               <Icon name="logout" size={26} strokeWidth={1.6} />
             </Pressable>
           </View>
         </View>
 
-   
         <View style={[styles.contentContainer, { flex: 1 }]}>
           {renderContent()}
         </View>
@@ -69,10 +75,12 @@ const Home = () => {
           <Pressable onPress={() => setActiveTab('calendar')}>
             <Icon name="calender" size={26} strokeWidth={1.6} />
           </Pressable>
+          <Pressable onPress={() => setActiveTab('community')}>
+            <Icon name="group" size={26} strokeWidth={1.6} />
+          </Pressable>
           <Pressable onPress={() => setActiveTab('notifications')}>
             <Icon name="notif" size={26} strokeWidth={1.6} />
           </Pressable>
-
           <Pressable onPress={() => setActiveTab('profile')}>
             <Icon name="user" size={26} strokeWidth={1.6} />
           </Pressable>
